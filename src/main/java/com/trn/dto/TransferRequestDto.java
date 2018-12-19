@@ -10,6 +10,12 @@ public class TransferRequestDto {
     public TransferRequestDto() {
     }
 
+    public TransferRequestDto(Long idToAccount, Long idFromAccount, double amount) {
+        this.idToAccount = idToAccount;
+        this.idFromAccount = idFromAccount;
+        this.amount = amount;
+    }
+
     public Long getIdToAccount() {
         return idToAccount;
     }
