@@ -63,7 +63,7 @@ public class BankAccountService implements AccountService {
         Account acc = repository.getAndLockAccount(accountDto.getId());
         BigDecimal subtract = subtract(acc.getAmount(), accountDto.getAmount());
         if (subtract.compareTo(BigDecimal.ZERO) < 0) {
-            throw new OverDraftException("Account with id:" + accountDto.getId() + " does not have enough balance to transfer.", "CLIENT_ERROR");
+            throw new OverDraftException("Account with id:" + accountDto.getId() + " does not have enough balance.", "CLIENT_ERROR");
         }
         acc.setAmount(subtract);
         repository.saveAndFlush(acc);
@@ -92,7 +92,7 @@ public class BankAccountService implements AccountService {
             throw new AccountNotExistException("Account with id:" + transferDto.getIdFromAccount() + "  is not found", "ACCOUNT_ERROR");
         }
 
-        if (transferDto.getIdToAccount().equals(transferDto.getIdFromAccount())){
+        if (transferDto.getIdToAccount().equals(transferDto.getIdFromAccount())) {
             throw new IllegalArgumentException("The same account transfer can not allow.");
         }
 

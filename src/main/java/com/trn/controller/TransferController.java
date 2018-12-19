@@ -32,7 +32,7 @@ public class TransferController {
     }
 
     @PutMapping(value = "/transfer", consumes = "application/json;charset=UTF-8")
-    public ResponseEntity<?> transfer(@RequestBody TransferRequestDto transferDto){
+    public ResponseEntity<?> transfer(@RequestBody TransferRequestDto transferDto) {
         service.transfer(transferDto);
         return new ResponseEntity(HttpStatus.OK);
     }

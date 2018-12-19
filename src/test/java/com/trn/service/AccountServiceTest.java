@@ -3,7 +3,6 @@ package com.trn.service;
 import com.trn.dto.AccountDto;
 import com.trn.entity.Account;
 import com.trn.exception.OverDraftException;
-import com.trn.repository.AccountRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
