@@ -1,6 +1,8 @@
 # Трансфер денег между счетами
 По умолчанию созданы два счета:  
+
  getAll - http://localhost:8080/accounts  
+ 
  get - http://localhost:8080/accounts/{id}  
 
  transfer - http://localhost:8080/transaction/transfer
