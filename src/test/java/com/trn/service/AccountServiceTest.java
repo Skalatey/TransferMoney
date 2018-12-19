@@ -37,6 +37,11 @@ public class AccountServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void whenDepositGetNullThenThrowException() throws Exception {
+        service.deposit(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void whenWithdrawGetNullThenThrowException() throws Exception {
         service.withdraw(null);
     }
