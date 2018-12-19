@@ -46,6 +46,7 @@ public class BankAccountService implements AccountService {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public Account deposit(AccountDto accountDto) {
+        Assert.notNull(accountDto, "Account id is not be null.");
         Account account = repository.getAndLockAccount(accountDto.getId());
         account.setAmount(plus(account.getAmount(), accountDto.getAmount()));
         repository.saveAndFlush(account);
@@ -57,7 +58,7 @@ public class BankAccountService implements AccountService {
     @Override
     public Account withdraw(AccountDto accountDto) {
 
-        Assert.notNull(accountDto, "Account id is not be null.");
+        Assert.notNull(accountDto, "Account is not be null.");
 
         Account acc = repository.getAndLockAccount(accountDto.getId());
         BigDecimal subtract = subtract(acc.getAmount(), accountDto.getAmount());
