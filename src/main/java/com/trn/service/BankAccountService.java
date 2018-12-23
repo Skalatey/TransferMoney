@@ -43,10 +43,18 @@ public class BankAccountService implements AccountService {
         return account;
     }
 
+    private void isNegativeValue(double value) {
+        if (BigDecimal.valueOf(value).setScale(2, BigDecimal.ROUND_HALF_UP)
+                .compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Amount is negative value.");
+        }
+    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public Account deposit(AccountDto accountDto) {
         Assert.notNull(accountDto, "Account id is not be null.");
+        isNegativeValue(accountDto.getAmount());
         Account account = repository.getAndLockAccount(accountDto.getId());
         account.setAmount(plus(account.getAmount(), accountDto.getAmount()));
         repository.saveAndFlush(account);
