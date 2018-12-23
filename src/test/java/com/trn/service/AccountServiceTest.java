@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -53,22 +54,56 @@ public class AccountServiceTest {
 
     @Test
     public void testConcurrencyCalls() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors
                 .newFixedThreadPool(Runtime.getRuntime()
                         .availableProcessors());
+
         //1000 - 500 = 500
         for (int i = 0; i < 5; i++) {
-            executor.execute(() -> service.withdraw(new AccountDto(idAccount1, 100)));
+            System.out.println("Add execute withdraw = " + i);
+            executor.execute(() -> {
+                System.out.println("Start withdraw " + Thread.currentThread().getName());
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Execute withdraw " + Thread.currentThread().getName());
+                service.withdraw(new AccountDto(idAccount1, 100));
+            });
         }
 
         //1000 + 400 = 1400
         for (int i = 0; i < 4; i++) {
-            executor.execute(() -> service.deposit(new AccountDto(idAccount2, 100)));
+            System.out.println("Add execute deposit = " + i);
+            executor.execute(() -> {
+                System.out.println("Start deposit " + Thread.currentThread().getName());
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Execute deposit " + Thread.currentThread().getName());
+                service.deposit(new AccountDto(idAccount2, 100));
+            });
         }
 
         //1 = 500 + 100 = 600
         //2 = 1400 - 100 = 1300
-        executor.execute(() -> service.transfer(new TransferRequestDto(idAccount1, idAccount2, 100)));
+        System.out.println("Add execute transfer");
+        executor.execute(() -> {
+            System.out.println("Start transfer " + Thread.currentThread().getName());
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Execute transfer " + Thread.currentThread().getName());
+            service.transfer(new TransferRequestDto(idAccount1, idAccount2, 100));
+        });
+        TimeUnit.SECONDS.sleep(10);
+        latch.countDown();
 
         executor.shutdown();
         executor.awaitTermination(15, TimeUnit.SECONDS);
