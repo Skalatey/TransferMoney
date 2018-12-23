@@ -135,7 +135,6 @@ public class AccountServiceTest {
     }
 
 
-
     @Test
     public void whenGetTransferReqDto_thenSuccess() throws Exception {
         //Init
@@ -203,73 +202,4 @@ public class AccountServiceTest {
         assertEquals(resultFrom.getId(), account2.getId());
         assertEquals(resultFrom.getAmount(), account2.getAmount());
     }
-
-    /*
-    @Test
-    public void testConcurrencyCalls() throws Exception {
-        TestTransaction.start();
-        CountDownLatch latch = new CountDownLatch(1);
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors
-                .newFixedThreadPool(Runtime.getRuntime()
-                        .availableProcessors());
-
-        //1000 - 500 = 500
-        for (int i = 0; i < 5; i++) {
-            System.out.println("Add execute withdraw = " + i);
-            executor.execute(() -> {
-                System.out.println("Start withdraw " + Thread.currentThread().getName());
-                try {
-                    latch.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Execute withdraw " + Thread.currentThread().getName());
-                service.withdraw(new AccountDto(idAccount1, 100));
-            });
-        }
-
-        //1000 + 400 = 1400
-        for (int i = 0; i < 4; i++) {
-            System.out.println("Add execute deposit = " + i);
-            executor.execute(() -> {
-                System.out.println("Start deposit " + Thread.currentThread().getName());
-                try {
-                    latch.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Execute deposit " + Thread.currentThread().getName());
-                service.deposit(new AccountDto(idAccount2, 100));
-            });
-        }
-
-        //1 = 500 + 100 = 600
-        //2 = 1400 - 100 = 1300
-        System.out.println("Add execute transfer");
-        executor.execute(() -> {
-            System.out.println("Start transfer " + Thread.currentThread().getName());
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Execute transfer " + Thread.currentThread().getName());
-            service.transfer(new TransferRequestDto(idAccount1, idAccount2, 100));
-        });
-        TimeUnit.SECONDS.sleep(10);
-        latch.countDown();
-
-        executor.shutdown();
-        executor.awaitTermination(15, TimeUnit.SECONDS);
-
-
-        Account oneAcc1 = service.getAccount(idAccount1);
-        Account oneAcc2 = service.getAccount(idAccount2);
-
-        Assert.assertEquals(new BigDecimal("600.00"), oneAcc1.getAmount());
-        Assert.assertEquals(new BigDecimal("1300.00"), oneAcc2.getAmount());
-        TestTransaction.flagForRollback();
-        TestTransaction.end();
-
-    }*/
 }
