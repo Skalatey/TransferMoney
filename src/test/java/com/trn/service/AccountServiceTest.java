@@ -58,6 +58,19 @@ public class AccountServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void whenWithdrawGetNegativeValue_ThenThrowException() throws Exception {
+        account.setAmount(BigDecimal.valueOf(10000.00));
+
+        when(repository.getAndLockAccount(any(Long.class))).thenReturn(account);
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setId(idAccount);
+        accountDto.setAmount(-2000);
+
+        service.withdraw(accountDto);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void whenDepositGetNull_ThenThrowException() throws Exception {
         service.deposit(null);
     }

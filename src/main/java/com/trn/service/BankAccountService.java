@@ -65,9 +65,8 @@ public class BankAccountService implements AccountService {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public Account withdraw(AccountDto accountDto) {
-
         Assert.notNull(accountDto, "Account is not be null.");
-
+        isNegativeValue(accountDto.getAmount());
         Account acc = repository.getAndLockAccount(accountDto.getId());
         BigDecimal subtract = subtract(acc.getAmount(), accountDto.getAmount());
         if (subtract.compareTo(BigDecimal.ZERO) < 0) {
